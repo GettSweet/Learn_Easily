@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#202020</color>
+    <color name="black1">#353535</color>
+    <color name="black2">#2c2d2f</color>
+    <color name="black3">#191919</color>
+
+    <color name="gray">#777777</color>
+    <color name="gray2">#AFAFAF</color>
+    <color name="gray1">#2c2d2f</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white1">#C3C3C3</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#3C96FF</color>
+    <color name="purple_400">#88BFFF</color>
+    <color name="purple_700">#0177FF</color>
+    <color name="purple_800">#004FA6</color>
+    <color name="teal_200">#35A3EC</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="lavender">#595959</color>
+    <color name="invis">#00595959</color>
+    <color name="fifty_invis">#80595959</color>
+
 </resources>

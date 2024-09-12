@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black3"
     tools:context=".MainActivity">
 
-    <TextView
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pagerMain"
+        android:layout_width="match_parent"
+        android:background="@color/black3"
+        android:layout_height="match_parent"
+        />
+    
+    
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="60dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="5dp"
+        android:translationZ="10dp"
+        android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bntview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/black2"
+            app:itemIconTint="@color/bottom_nav_color"
+            app:itemTextColor="@color/bottom_nav_color"
+            style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+            app:menu="@menu/bottom_menu"
+            app:labelVisibilityMode="labeled" />
+
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

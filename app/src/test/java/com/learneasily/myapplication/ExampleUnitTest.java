@@ -1,4 +1,4 @@
-package com.getsweet.learneasily;
+package com.learneasily.myapplication;
 
 import org.junit.Test;
 

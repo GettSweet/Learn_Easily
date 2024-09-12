@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">LearnEasily</string>
+    <string name="app_name" translatable="false">УчиЛегко</string>
+    <string name="news_title" translatable="false">Статьи</string>
+    <string name="learn_title" translatable="false">Обучение</string>
+    <string name="tasks_title" translatable="false">Задачи</string>
+    <string name="profile_title">Профиль</string>
 </resources>

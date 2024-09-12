@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black3"
+    tools:context=".bottom_nav.profile_activitys.EditActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/black3"
+        />
+
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="100dp"
+        android:hint="Имя"
+        android:minHeight="48dp"
+        android:textColorHint="@color/white" />
+
+    <EditText
+        android:id="@+id/edit_surname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_name"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:hint="Фамилия"
+        android:minHeight="48dp"
+        android:textColorHint="@color/white" />
+
+    <Button
+        android:id="@+id/edit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4ab34c"
+        android:layout_marginHorizontal="30dp"
+        android:layout_alignParentBottom="true"
+        android:text="Сохранить данные"
+        android:fontFamily="@font/montserrat_alternates_extrabold"
+        android:textSize="15sp"
+        android:layout_marginBottom="20dp"
+        />
+
+</RelativeLayout>
