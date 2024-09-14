@@ -6,16 +6,20 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
 import com.learneasily.myapplication.adapter.AdapterViewPager;
 import com.learneasily.myapplication.bottom_nav.FragmentLearn;
 import com.learneasily.myapplication.bottom_nav.FragmentNews;
 import com.learneasily.myapplication.bottom_nav.profile_activitys.FragmentProfile;
 import com.learneasily.myapplication.bottom_nav.FragmentTasks;
+import com.learneasily.myapplication.start_activitys.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(FirebaseAuth.getInstance().getCurrentUser()==null){
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+
         pagerMain = findViewById(R.id.pagerMain);
         bntview = findViewById(R.id.bntview);
 

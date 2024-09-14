@@ -1,14 +1,13 @@
 {
   "project_info": {
-    "project_number": "927565406813",
-    "firebase_url": "https://logandregeasylearn-default-rtdb.firebaseio.com",
-    "project_id": "logandregeasylearn",
-    "storage_bucket": "logandregeasylearn.appspot.com"
+    "project_number": "205539063250",
+    "project_id": "easlylearn",
+    "storage_bucket": "easlylearn.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:927565406813:android:a3d28d512205d5034de3b4",
+        "mobilesdk_app_id": "1:205539063250:android:ee51ae531814371b74040b",
         "android_client_info": {
           "package_name": "com.learneasily.myapplication"
         }
@@ -16,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBOudqOQYiWoDD0Meoc467szabPvjdiAD0"
+          "current_key": "AIzaSyD71pCjNyEygfkp23rLYK0YcOllDadwWYg"
         }
       ],
       "services": {

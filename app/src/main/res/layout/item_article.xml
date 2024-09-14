@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Заголовок статьи"
+        android:textSize="18sp"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/body_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Текст статьи"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/likes_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Лайки: 0"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/views_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Просмотры: 0"
+        android:textColor="@color/white" />
+
+</LinearLayout>

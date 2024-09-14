@@ -95,7 +95,7 @@ public class FragmentProfile extends Fragment {
     private void handleDataChange(DataSnapshot dataSnapshot, ProgressBar loadingProgressBar) {
         String name = dataSnapshot.child("name").getValue(String.class);
         String surname = dataSnapshot.child("surname").getValue(String.class);
-        String email = dataSnapshot.child("email").getValue(String.class); // Добавлено получение email
+        String email = dataSnapshot.child("email").getValue(String.class);
 
         loadingProgressBar.setVisibility(View.VISIBLE);
         nameSurnameTextView.setVisibility(View.INVISIBLE);

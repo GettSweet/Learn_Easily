@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Проверка состояния авторизации при запуске приложения
         if (isUserLoggedIn()) {
             startMainActivity();
         }
@@ -52,13 +51,10 @@ public class LoginActivity extends AppCompatActivity {
         showPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // При каждом нажатии кнопки меняем тип ввода
                 if (password_login.getTransformationMethod() == null) {
-                    // Если тип ввода null, то устанавливаем тип ввода для пароля
                     password_login.setTransformationMethod(new PasswordTransformationMethod());
                     showPasswordButton.setImageResource(R.drawable.invisible);
                 } else {
-                    // Иначе, если тип ввода установлен для пароля, то убираем его
                     password_login.setTransformationMethod(null);
                     showPasswordButton.setImageResource(R.drawable.visible);
                 }

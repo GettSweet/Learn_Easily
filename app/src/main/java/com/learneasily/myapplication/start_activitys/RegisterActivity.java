@@ -82,6 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         ref.child("Users").child(uid).child("name").setValue(name);
                                         ref.child("Users").child(uid).child("surname").setValue(surname);
                                         ref.child("Users").child(uid).child("profileImage").setValue("");
+                                        ref.child("Users").child(uid).child("isTrusted").setValue(false);
 
                                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                         startActivity(intent);
