@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black3"
+    android:background="@color/blue_light"
     tools:context=".bottom_nav.FragmentNews">
 
     <!-- Заголовок "Статьи" -->
@@ -13,7 +13,7 @@
         android:text="Статьи"
         android:gravity="center"
         android:textSize="40sp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/black1"/>
 
     <!-- Кнопка добавления статьи (изначально скрыта) -->
     <Button

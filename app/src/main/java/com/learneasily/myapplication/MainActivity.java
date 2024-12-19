@@ -2,6 +2,7 @@ package com.learneasily.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -23,9 +24,9 @@ import com.learneasily.myapplication.start_activitys.LoginActivity;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    ViewPager2 pagerMain;
-    ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
-    BottomNavigationView bntview;
+    private ViewPager2 pagerMain;
+    private ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
+    private BottomNavigationView bntview;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -33,25 +34,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(FirebaseAuth.getInstance().getCurrentUser()==null){
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        }
-
+        // Инициализация компонентов
         pagerMain = findViewById(R.id.pagerMain);
         bntview = findViewById(R.id.bntview);
 
+        // Добавление фрагментов в список
         fragmentArrayList.add(new FragmentNews());
         fragmentArrayList.add(new FragmentLearn());
         fragmentArrayList.add(new FragmentTasks());
         fragmentArrayList.add(new FragmentProfile());
 
+        // Настройка адаптера ViewPager
         AdapterViewPager adapterViewPager = new AdapterViewPager(this, fragmentArrayList);
         pagerMain.setAdapter(adapterViewPager);
 
+        // Синхронизация ViewPager с BottomNavigationView
         pagerMain.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         bntview.setSelectedItemId(R.id.home);
                         break;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Настройка обработки нажатий в BottomNavigationView
         bntview.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
             @Override
@@ -86,6 +88,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
 }

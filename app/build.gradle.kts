@@ -47,6 +47,14 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation(platform("com.google.firebase:firebase-database:20.3.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.squareup.retrofit2:retrofit:2.1.0")
+    implementation("com.squareup.retrofit:retrofit:2.0.0-beta2")
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:3.6.0")
+
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.rengwuxian.materialedittext:library:2.1.4")

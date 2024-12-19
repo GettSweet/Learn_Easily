@@ -18,6 +18,20 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp"/>
 
+    <Button
+        android:id="@+id/btn_skip_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/register_txt"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/black3"
+        android:fontFamily="@font/montserrat_light"
+        android:text="Пропустить авторизацию"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:cornerRadius="20sp" />
+
 
     <EditText
         android:id="@+id/email_login"

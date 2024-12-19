@@ -3,15 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black3"
+    android:background="@color/blue_light"
     tools:context=".bottom_nav.FragmentLearn">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Обучение"
-        android:gravity="center"
-        android:textSize="40sp"
-        android:textColor="@color/white"/>
+    <ImageButton
+        android:id="@+id/couples_schedule"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="185dp"
+        android:background="@drawable/couples_schedule"
+        android:contentDescription="@string/couples_schedule_description"/>
+
 
 </FrameLayout>

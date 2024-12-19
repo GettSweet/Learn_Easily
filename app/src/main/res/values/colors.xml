@@ -20,5 +20,9 @@
     <color name="lavender">#595959</color>
     <color name="invis">#00595959</color>
     <color name="fifty_invis">#80595959</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="blue_light">#E3F2FD</color>
+    <color name="blue_dark">#0288D1</color>
 
 </resources>
