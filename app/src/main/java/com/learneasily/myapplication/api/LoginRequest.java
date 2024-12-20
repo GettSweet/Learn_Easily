@@ -1,4 +1,4 @@
-package com.learneasily.myapplication.database;
+package com.learneasily.myapplication.api;
 
 public class LoginRequest {
     private String email;

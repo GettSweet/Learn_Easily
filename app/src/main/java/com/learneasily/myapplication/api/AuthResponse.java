@@ -1,9 +1,10 @@
-package com.learneasily.myapplication.database;
+package com.learneasily.myapplication.api;
 
 public class AuthResponse {
     private boolean success;
     private String message;
     private String token;
+    private int id; // Добавляем поле ID пользователя
 
     public boolean isSuccess() {
         return success;
@@ -27,5 +28,13 @@ public class AuthResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getId() {
+        return id; // Геттер для ID
+    }
+
+    public void setId(int id) {
+        this.id = id; // Сеттер для ID
     }
 }

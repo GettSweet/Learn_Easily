@@ -120,7 +120,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="25dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/off_white"
             android:fontFamily="@font/montserrat_semibold"
             android:text="Зарегистрироваться"
             android:textColor="@color/black1"

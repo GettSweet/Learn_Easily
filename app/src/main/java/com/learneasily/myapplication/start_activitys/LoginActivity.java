@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,10 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.learneasily.myapplication.MainActivity;
 import com.learneasily.myapplication.R;
-import com.learneasily.myapplication.database.ApiService;
-import com.learneasily.myapplication.database.AuthResponse;
-import com.learneasily.myapplication.database.LoginRequest;
-import com.learneasily.myapplication.database.RetrofitClient;
+import com.learneasily.myapplication.api.ApiService;
+import com.learneasily.myapplication.api.AppConfig;
+import com.learneasily.myapplication.api.AuthResponse;
+import com.learneasily.myapplication.api.LoginRequest;
+import com.learneasily.myapplication.api.RetrofitClient;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +31,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_login;
     private ImageButton showPasswordButton;
     private TextView register_txt;
-
     private ApiService apiService;
 
     @Override
@@ -44,9 +43,17 @@ public class LoginActivity extends AppCompatActivity {
         btn_login = findViewById(R.id.btn_login);
         register_txt = findViewById(R.id.register_txt);
         showPasswordButton = findViewById(R.id.show_password_button);
+        apiService = RetrofitClient.getClient(AppConfig.BASE_URL).create(ApiService.class);
 
-        // Инициализация API
-        apiService = RetrofitClient.getClient("http://192.168.0.10:8000/").create(ApiService.class);
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false);
+        if (isLoggedIn) {
+            // Если пользователь уже авторизован, перенаправляем на MainActivity
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return; // Прерываем выполнение метода
+        }
 
         showPasswordButton.setOnClickListener(v -> {
             if (password_login.getTransformationMethod() == null) {
@@ -78,14 +85,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            AuthResponse authResponse = response.body();
-                            if (authResponse.isSuccess()) {
-                                saveToken(authResponse.getToken());
-                                Toast.makeText(LoginActivity.this, "Успешный вход", Toast.LENGTH_LONG).show();
-                                startMainActivity();
-                            } else {
-                                Toast.makeText(LoginActivity.this, authResponse.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                            saveUserToken(response.body().getToken());
+                            startMainActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Ошибка сервера: " + response.code(), Toast.LENGTH_LONG).show();
                         }
@@ -94,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<AuthResponse> call, Throwable t) {
                         Toast.makeText(LoginActivity.this, "Ошибка сети: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                        t.printStackTrace(); // Вывод ошибки в логах
                     }
                 });
             }
@@ -105,10 +105,11 @@ public class LoginActivity extends AppCompatActivity {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private void saveToken(String token) {
-        SharedPreferences preferences = getSharedPreferences("user_data", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("token", token);
+    private void saveUserToken(String token) {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_logged_in", true);
+        editor.putString("user_token", token);
         editor.apply();
     }
 

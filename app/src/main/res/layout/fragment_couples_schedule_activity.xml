@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/blue_light"
+    android:background="@color/off_white"
     tools:context=".bottom_nav.CouplesScheduleActivity">
 
     <ImageButton
@@ -54,7 +54,7 @@
             android:fontFamily="@font/montserrat_light"
             android:text="Текущая пара: ..."
             android:textSize="18sp"
-            android:textColor="@color/blue_dark" />
+            android:textColor="@color/off_white" />
     </LinearLayout>
 
     <!-- Карточка следующей пары -->
@@ -74,7 +74,7 @@
             android:text="Следующая пара: ..."
             android:fontFamily="@font/montserrat_light"
             android:textSize="18sp"
-            android:textColor="@color/blue_dark" />
+            android:textColor="@color/off_white" />
     </LinearLayout>
 
     <!-- Карточка времени перерыва -->
@@ -93,7 +93,7 @@
             android:text="Перерыв: ..."
             android:fontFamily="@font/montserrat_light"
             android:textSize="18sp"
-            android:textColor="@color/blue_dark" />
+            android:textColor="@color/off_white" />
     </LinearLayout>
 
     <ImageButton

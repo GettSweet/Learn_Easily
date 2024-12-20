@@ -97,7 +97,7 @@ public class CouplesScheduleActivity extends AppCompatActivity {
             TextView dayTitle = new TextView(this);
             dayTitle.setText(days[i]);
             dayTitle.setTextSize(18);
-            dayTitle.setTextColor(getResources().getColor(R.color.blue_dark));
+            dayTitle.setTextColor(getResources().getColor(R.color.purple_800));
             dayTitle.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
             dayTitle.setPadding(8, 8, 8, 8); // Внутренние отступы заголовка
             dayCard.addView(dayTitle);

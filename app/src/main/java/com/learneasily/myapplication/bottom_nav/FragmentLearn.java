@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import com.learneasily.myapplication.R;
@@ -17,7 +17,7 @@ public class FragmentLearn extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_learn, container, false);
 
-        ImageButton couplesScheduleButton = view.findViewById(R.id.couples_schedule);
+        Button couplesScheduleButton = view.findViewById(R.id.couples_schedule);
         couplesScheduleButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), CouplesScheduleActivity.class);
             startActivity(intent);

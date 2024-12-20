@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_light"
+    android:background="@color/off_white"
     tools:context=".MainActivity">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pagerMain"
         android:layout_width="match_parent"
-        android:background="@color/blue_light"
+        android:background="@color/off_white"
         android:layout_height="match_parent"
         />
 

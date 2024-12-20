@@ -12,7 +12,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo_svg"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logo_light"
+        android:roundIcon="@drawable/logo_white"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
@@ -31,7 +31,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".start_activitys.SplashActivity"
             android:exported="true">

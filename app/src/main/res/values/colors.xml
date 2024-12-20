@@ -8,8 +8,7 @@
     <color name="gray">#777777</color>
     <color name="gray2">#AFAFAF</color>
     <color name="gray1">#2c2d2f</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="white1">#C3C3C3</color>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#3C96FF</color>
     <color name="purple_400">#88BFFF</color>
@@ -17,12 +16,26 @@
     <color name="purple_800">#004FA6</color>
     <color name="teal_200">#35A3EC</color>
     <color name="teal_700">#FF018786</color>
+
     <color name="lavender">#595959</color>
     <color name="invis">#00595959</color>
     <color name="fifty_invis">#80595959</color>
     <color name="transparent">#00000000</color>
-
-    <color name="blue_light">#E3F2FD</color>
     <color name="blue_dark">#0288D1</color>
+
+    <color name="gradient_start">#4285F4</color>
+    <color name="gradient_center">#66BBFF</color>
+    <color name="gradient_end">#87CEEB</color>
+    <color name="button_shadow">#44000000</color>
+    <color name="border_color">#B0E0E6</color>
+
+    # Best White Colors
+    <color name="ghost_white">#F8F8FF</color>
+    <color name="alice_blue">#F0F8FF</color>
+    <color name="off_white">#FAF9F6</color>
+    <color name="mint_cream">#F5FFFA</color>
+    <color name="baby_powder">#F8F7F2</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white1">#C3C3C3</color>
 
 </resources>

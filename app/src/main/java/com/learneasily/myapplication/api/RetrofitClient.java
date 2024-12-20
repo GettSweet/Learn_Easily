@@ -1,4 +1,4 @@
-package com.learneasily.myapplication.database;
+package com.learneasily.myapplication.api;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

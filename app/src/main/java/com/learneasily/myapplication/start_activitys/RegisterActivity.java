@@ -1,6 +1,7 @@
 package com.learneasily.myapplication.start_activitys;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -12,10 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.learneasily.myapplication.MainActivity;
 import com.learneasily.myapplication.R;
-import com.learneasily.myapplication.database.ApiService;
-import com.learneasily.myapplication.database.RegisterRequest;
-import com.learneasily.myapplication.database.RegisterResponse;
-import com.learneasily.myapplication.database.RetrofitClient;
+import com.learneasily.myapplication.api.ApiService;
+import com.learneasily.myapplication.api.AppConfig;
+import com.learneasily.myapplication.api.RegisterRequest;
+import com.learneasily.myapplication.api.RegisterResponse;
+import com.learneasily.myapplication.api.RetrofitClient;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,7 +45,17 @@ public class RegisterActivity extends AppCompatActivity {
         btn_register = findViewById(R.id.btn_register);
 
         // Инициализация API
-        apiService = RetrofitClient.getClient("http://192.168.0.10:8000/").create(ApiService.class);
+        apiService = RetrofitClient.getClient(AppConfig.BASE_URL).create(ApiService.class);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false);
+        if (isLoggedIn) {
+            // Если пользователь уже авторизован, перенаправляем на MainActivity
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return; // Прерываем выполнение метода
+        }
 
         btn_register.setOnClickListener(v -> {
             String email = email_register.getText().toString();
@@ -61,11 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            if (response.body().isSuccess()) {
-                                startMainActivity();
-                            } else {
-                                Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                            startLoginActivity();
                         } else {
                             Toast.makeText(RegisterActivity.this, "Ошибка сервера", Toast.LENGTH_LONG).show();
                         }
@@ -85,8 +93,8 @@ public class RegisterActivity extends AppCompatActivity {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+    private void startLoginActivity() {
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
