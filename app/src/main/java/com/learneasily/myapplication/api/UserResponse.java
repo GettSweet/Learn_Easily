@@ -7,9 +7,15 @@ public class UserResponse {
     private String email;
     private String avatar_url;
 
+    private Boolean teacher;
+
     // Геттеры и сеттеры
     public int getId() {
         return id;
+    }
+
+    public boolean isTeacher() {
+        return teacher;
     }
 
     public String getName() {
