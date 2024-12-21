@@ -1,4 +1,4 @@
-package com.learneasily.myapplication.bottom_nav;
+package com.learneasily.myapplication.bottom_nav.learn_other;
 
 import android.os.Bundle;
 import android.os.Handler;

@@ -40,6 +40,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     // Тестирование
     testImplementation("junit:junit:4.13.2")

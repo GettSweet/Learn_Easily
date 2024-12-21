@@ -5,17 +5,30 @@ public class UserResponse {
     private String name;
     private String surname;
     private String email;
+    private String group;
     private String avatar_url;
 
-    private Boolean teacher;
+    private boolean teacher;
+
+    public boolean isTeacher() {
+        return teacher;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public void setTeacher(boolean teacher) {
+        this.teacher = teacher;
+    }
 
     // Геттеры и сеттеры
     public int getId() {
         return id;
-    }
-
-    public boolean isTeacher() {
-        return teacher;
     }
 
     public String getName() {

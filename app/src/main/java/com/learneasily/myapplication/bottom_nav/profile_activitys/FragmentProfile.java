@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.learneasily.myapplication.R;
 import com.learneasily.myapplication.api.ApiService;
+import com.learneasily.myapplication.api.AppConfig;
 import com.learneasily.myapplication.api.RetrofitClient;
 import com.learneasily.myapplication.api.UserResponse;
 import com.learneasily.myapplication.databinding.FragmentProfileBinding;
@@ -50,16 +50,13 @@ public class FragmentProfile extends Fragment {
     private TextView nameSurnameTextView;
     private TextView emailTextView;
     private TextView teacherTextView;
-    private Button editButton;
     private FragmentProfileBinding binding;
     private ImageButton go_stngs;
-    private static final String BASE_URL = "http://192.168.0.10:8000";
-
     private Handler handler = new Handler();
     private Runnable periodicUpdate;
+    private TextView idTextView;
     private Runnable dataUpdater;
-    private static final int UPDATE_INTERVAL = 1000; // 1 секунда
-
+    private static final int UPDATE_INTERVAL = 10000;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -75,6 +72,7 @@ public class FragmentProfile extends Fragment {
                 SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                 int userId = sharedPreferences.getInt("user_id", -1);
                 if (userId != -1) {
+                    idTextView.setText("id: " + userId);
                     loadUserData(userId);
                 }
                 handler.postDelayed(this, UPDATE_INTERVAL);
@@ -82,14 +80,14 @@ public class FragmentProfile extends Fragment {
         };
         handler.post(dataUpdater);
 
-        swipeRefreshLayout = binding.swipeRefreshLayout; // Настройте SwipeRefreshLayout
+        swipeRefreshLayout = binding.swipeRefreshLayout;
         swipeRefreshLayout.setOnRefreshListener(() -> {
             SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
             int userId = sharedPreferences.getInt("user_id", -1);
             if (userId != -1) {
                 loadUserData(userId);
             }
-            swipeRefreshLayout.setRefreshing(false); // Завершение анимации
+            swipeRefreshLayout.setRefreshing(false);
         });
 
         return view;
@@ -105,7 +103,7 @@ public class FragmentProfile extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (handler != null && dataUpdater != null) {
-            handler.removeCallbacks(dataUpdater); // Убедитесь, что handler останавливается
+            handler.removeCallbacks(dataUpdater);
         }
     }
 
@@ -124,8 +122,6 @@ public class FragmentProfile extends Fragment {
         if (userId != -1) {
             loadUserData(userId);
         }
-
-
     }
 
     @Override
@@ -138,24 +134,24 @@ public class FragmentProfile extends Fragment {
     }
 
     private void loadUserData(int userId) {
-        ApiService apiService = RetrofitClient.getClient(BASE_URL).create(ApiService.class);
+        idTextView.setText("id: " + userId);
+        ApiService apiService = RetrofitClient.getClient(AppConfig.BASE_URL).create(ApiService.class);
         ProgressBar progressBar = binding.loadingProgressBar;
         apiService.getUserDetails(userId).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                progressBar.setVisibility(View.GONE); // Скрыть ProgressBar после завершения
+                progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
                     UserResponse user = response.body();
-
                     nameSurnameTextView.setText(user.getName() + " " + user.getSurname());
                     emailTextView.setText(user.getEmail());
 
-                    if (user.isTeacher()) { // Проверка значения teacher
+                    if (user.isTeacher()) {
                         teacherTextView.setVisibility(View.VISIBLE);
                         teacherTextView.setText("Вы преподаватель");
                     } else {
                         teacherTextView.setVisibility(View.VISIBLE);
-                        teacherTextView.setText("Вы студент");
+                        teacherTextView.setText("Вы студент группы " + user.getGroup());
                     }
 
                     Glide.with(requireContext())
@@ -170,7 +166,7 @@ public class FragmentProfile extends Fragment {
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE); // Скрыть ProgressBar при ошибке
+                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getContext(), "Ошибка сети: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -185,14 +181,14 @@ public class FragmentProfile extends Fragment {
         int userId = sharedPreferences.getInt("user_id", -1);
 
         if (userId == -1) {
-            Toast.makeText(getContext(), "Не удалось получить ID пользователя", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Не удалось получить ID пользователя", Toast.LENGTH_LONG).show();
             progressBar.setVisibility(View.GONE);
             return;
         }
 
         String filePath = getRealPathFromURI(avatarUri);
         if (filePath == null) {
-            Toast.makeText(getContext(), "Не удалось получить путь к файлу", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Не удалось получить путь к файлу", Toast.LENGTH_LONG).show();
             progressBar.setVisibility(View.GONE);
             return;
         }
@@ -204,15 +200,15 @@ public class FragmentProfile extends Fragment {
         RequestBody userIdPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(userId));
         MultipartBody.Part avatarPart = MultipartBody.Part.createFormData("avatar", file.getName(), requestFile);
 
-        ApiService apiService = RetrofitClient.getClient(BASE_URL).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(AppConfig.BASE_URL).create(ApiService.class);
         apiService.uploadAvatar(userIdPart, avatarPart).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Аватар успешно загружен", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Аватар успешно загружен", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getContext(), "Ошибка загрузки аватара: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Ошибка загрузки аватара: " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -276,9 +272,16 @@ public class FragmentProfile extends Fragment {
         nameSurnameTextView = view.findViewById(R.id.name_surname);
         emailTextView = view.findViewById(R.id.email_profile);
         teacherTextView = view.findViewById(R.id.teacher_profile);
+        idTextView = view.findViewById(R.id.id_profile);
 
         ImageButton logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> showLogoutConfirmationDialog());
+
+        ImageButton goStngsButton = view.findViewById(R.id.go_settings);
+        goStngsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), SettingsActivity.class);
+            startActivity(intent);
+        });
 
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("user_name", "Имя");

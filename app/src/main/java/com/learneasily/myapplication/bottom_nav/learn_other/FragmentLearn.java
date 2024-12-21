@@ -1,4 +1,4 @@
-package com.learneasily.myapplication.bottom_nav;
+package com.learneasily.myapplication.bottom_nav.learn_other;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import com.learneasily.myapplication.R;
+import com.learneasily.myapplication.bottom_nav.learn_other.CouplesScheduleActivity;
 
 public class FragmentLearn extends Fragment {
 

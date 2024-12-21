@@ -4,19 +4,17 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.learneasily.myapplication.adapter.AdapterViewPager;
-import com.learneasily.myapplication.bottom_nav.FragmentLearn;
-import com.learneasily.myapplication.bottom_nav.FragmentNews;
+import com.learneasily.myapplication.bottom_nav.learn_other.FragmentLearn;
+import com.learneasily.myapplication.bottom_nav.articles.FragmentNews;
 import com.learneasily.myapplication.bottom_nav.FragmentTasks;
 import com.learneasily.myapplication.bottom_nav.profile_activitys.FragmentProfile;
 import com.learneasily.myapplication.start_activitys.LoginActivity;
@@ -36,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
         // Проверка авторизации
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false);
-        if (!isLoggedIn) {
+        int userId = sharedPreferences.getInt("user_id", -1);
+
+        if (!isLoggedIn || userId == -1) {
             // Если пользователь не авторизован, перенаправляем на LoginActivity
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // Инициализация компонентов и настройка интерфейса
+        // Инициализация компонентов
         pagerMain = findViewById(R.id.pagerMain);
         bntview = findViewById(R.id.bntview);
 

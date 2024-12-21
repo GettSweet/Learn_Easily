@@ -14,14 +14,14 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo_svg"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logo_white"
+        android:roundIcon="@drawable/logo_svg"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
             android:name=".bottom_nav.profile_activitys.SettingsActivity"
             android:exported="false" />
-        <activity android:name=".bottom_nav.CouplesScheduleActivity" />
+        <activity android:name=".bottom_nav.learn_other.CouplesScheduleActivity" />
         <activity
             android:name=".bottom_nav.profile_activitys.EditActivity"
             android:exported="false" />
@@ -31,6 +31,7 @@
         <activity
             android:name=".start_activitys.RegisterActivity"
             android:exported="false" />
+        <activity android:name=".bottom_nav.articles.FullscreenImageActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />

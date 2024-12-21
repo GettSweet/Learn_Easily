@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-            return; // Прерываем выполнение метода
+            return;
         }
 
         showPasswordButton.setOnClickListener(v -> {
@@ -88,21 +88,18 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             AuthResponse authResponse = response.body();
-                            Log.d("AuthResponse", "Parsed Response: " + new Gson().toJson(response.body()));
                             AuthResponse.Student student = authResponse.getStudent();
 
                             saveUserData(student.getName(), student.getSurname(), student.getEmail(), student.getId());
 
                             startMainActivity();
                         } else {
-                            Log.d("AuthResponse", "Error: " + response.code());
                             Toast.makeText(LoginActivity.this, "Ошибка сервера: " + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AuthResponse> call, Throwable t) {
-                        Log.e("AuthResponse", "Failure: " + t.getMessage());
                         Toast.makeText(LoginActivity.this, "Ошибка сети: " + t.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });

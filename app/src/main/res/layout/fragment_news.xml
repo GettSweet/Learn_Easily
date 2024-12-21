@@ -1,17 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/off_white"
-    tools:context=".bottom_nav.FragmentNews">
+    tools:context=".bottom_nav.articles.FragmentNews">
 
-    <!-- Заголовок "Статьи" -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Статьи"
-        android:gravity="center"
-        android:textSize="40sp"
-        android:textColor="@color/black1"/>
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:scrollbars="vertical" />
 </FrameLayout>

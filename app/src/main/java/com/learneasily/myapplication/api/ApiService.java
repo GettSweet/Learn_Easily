@@ -1,6 +1,8 @@
 package com.learneasily.myapplication.api;
 
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -21,6 +23,9 @@ public interface ApiService {
 
     @POST("register/") // Эндпоинт для регистрации
     Call<RegisterResponse> register(@Body RegisterRequest request);
+
+    @GET("articles/")
+    Call<List<ArticleResponse>> getArticles();
 
     @Multipart
     @POST("/upload-avatar/")
