@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="8dp">
 
+    <!-- Заголовок статьи -->
     <TextView
         android:id="@+id/articleTitle"
         android:layout_width="match_parent"
@@ -12,12 +13,30 @@
         android:textStyle="bold"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/articleAuthor"
+    <!-- Аватарка и автор статьи -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
+        <ImageView
+            android:id="@+id/authorAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_background" />
+
+        <TextView
+            android:id="@+id/articleAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Контент статьи -->
     <TextView
         android:id="@+id/articleContent"
         android:layout_width="match_parent"
@@ -25,6 +44,7 @@
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
+    <!-- Сетка изображений -->
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/imageGrid"
         android:layout_width="match_parent"
@@ -33,6 +53,7 @@
         app:columnCount="2"
         app:rowCount="2" />
 
+    <!-- RecyclerView (если требуется) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/imageRecyclerView"
         android:layout_width="match_parent"

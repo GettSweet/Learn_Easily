@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.learneasily.myapplication.R;
 import com.learneasily.myapplication.adapter.ArticleAdapter;
@@ -27,10 +28,7 @@ public class FragmentNews extends Fragment {
 
     private RecyclerView recyclerView;
     private ArticleAdapter adapter;
-
-    public FragmentNews() {
-        // Пустой конструктор
-    }
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,9 +39,14 @@ public class FragmentNews extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Устанавливаем слушатель для свайпа
+        swipeRefreshLayout.setOnRefreshListener(this::fetchArticles);
+
+        // Загружаем статьи
         fetchArticles();
     }
 
@@ -56,10 +59,12 @@ public class FragmentNews extends Fragment {
                     adapter = new ArticleAdapter(response.body());
                     recyclerView.setAdapter(adapter);
                 }
+                swipeRefreshLayout.setRefreshing(false); // Завершаем анимацию обновления
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ArticleResponse>> call, @NonNull Throwable t) {
+                swipeRefreshLayout.setRefreshing(false); // Завершаем анимацию обновления
                 // Обработка ошибки
             }
         });

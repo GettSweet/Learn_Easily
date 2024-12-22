@@ -10,6 +10,14 @@ public class ArticleResponse {
     private String author_surname;
     private String created_at;
     private List<ArticleImage> images;
+    private String authorAvatar;
+    public String getAuthorAvatar() {
+        return authorAvatar;
+    }
+
+    public void setAuthorAvatar(String authorAvatar) {
+        this.authorAvatar = authorAvatar;
+    }
 
     public static class ArticleImage {
         private int id;

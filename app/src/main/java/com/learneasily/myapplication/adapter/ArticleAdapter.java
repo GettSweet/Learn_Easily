@@ -43,6 +43,27 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         holder.author.setText(String.format("%s %s", article.getAuthorName(), article.getAuthorSurname()));
         holder.content.setText(article.getContent());
 
+        String authorAvatarUrl = article.getAuthorAvatar() != null
+                ? AppConfig.BASE_URL + article.getAuthorAvatar()
+                : null;
+
+        Log.d("ProfileFragment", "Avatar URL: " + authorAvatarUrl);
+
+        if (authorAvatarUrl != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(authorAvatarUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error_image)
+                    .circleCrop()
+                    .into(holder.authorAvatar);
+        } else {
+            // Устанавливаем дефолтное изображение
+            Glide.with(holder.itemView.getContext())
+                    .load(R.drawable.placeholder)
+                    .circleCrop()
+                    .into(holder.authorAvatar);
+        }
+
         // Очищаем GridLayout перед заполнением
         holder.imageGrid.removeAllViews();
 
@@ -53,11 +74,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                     .collect(Collectors.toList());
         }
 
+        // Ограничиваем количество отображаемых изображений
         if (imageUrls != null && !imageUrls.isEmpty()) {
-            // Устанавливаем количество колонок
+            int maxImages = Math.min(imageUrls.size(), 10); // Максимум 10 изображений
             holder.imageGrid.setColumnCount(2);
+            int rowCount = (int) Math.ceil(maxImages / 2.0); // Высчитываем количество строк
+            holder.imageGrid.setRowCount(rowCount);
 
-            for (int i = 0; i < imageUrls.size(); i++) {
+            for (int i = 0; i < maxImages; i++) {
                 String imageUrl = imageUrls.get(i);
                 String fullImageUrl = AppConfig.BASE_URL + imageUrl;
 
@@ -70,10 +94,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 layoutParams.rowSpec = GridLayout.spec(i / holder.imageGrid.getColumnCount(), 1f);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(layoutParams);
-
                 Glide.with(holder.itemView.getContext())
                         .load(fullImageUrl)
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.error_image)
                         .error(R.drawable.error_image)
                         .override(200, 200) // Уменьшение размера для оптимизации
                         .centerCrop()
@@ -92,6 +115,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     }
 
 
+
+
     @Override
     public int getItemCount() {
         return articles.size();
@@ -100,6 +125,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
         TextView title, author, content;
         GridLayout imageGrid;
+        ImageView authorAvatar;
 
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,6 +133,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             author = itemView.findViewById(R.id.articleAuthor);
             content = itemView.findViewById(R.id.articleContent);
             imageGrid = itemView.findViewById(R.id.imageGrid);
+            authorAvatar = itemView.findViewById(R.id.authorAvatar);
         }
     }
 }
