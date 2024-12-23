@@ -17,6 +17,8 @@
     <color name="teal_200">#35A3EC</color>
     <color name="teal_700">#FF018786</color>
 
+    <color name="link_color">#4285F4</color>
+
     <color name="lavender">#595959</color>
     <color name="invis">#00595959</color>
     <color name="fifty_invis">#80595959</color>

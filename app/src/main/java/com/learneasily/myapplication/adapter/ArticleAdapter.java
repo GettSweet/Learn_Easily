@@ -32,6 +32,7 @@ import com.learneasily.myapplication.bottom_nav.articles.FullscreenImageActivity
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -65,6 +66,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
         ArticleResponse article = articles.get(position);
 
+        int linkColor = holder.itemView.getContext().getResources().getColor(R.color.link_color);
+
+        holder.content.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.content.setHighlightColor(Color.TRANSPARENT);
+
         // Установка относительного времени
         holder.create_time.setText(getRelativeTime(article.getCreate_Time()));
 
@@ -79,9 +85,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         Matcher hashtagMatcher = hashtagPattern.matcher(contentText);
 
         while (hashtagMatcher.find()) {
-            int start = hashtagMatcher.start();
-            int end = hashtagMatcher.end();
-            spannableContent.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            final int start = hashtagMatcher.start();
+            final int end = hashtagMatcher.end();
+
+            spannableContent.setSpan(new ForegroundColorSpan(linkColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableContent.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
@@ -95,9 +102,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         Matcher urlMatcher = urlPattern.matcher(contentText);
 
         while (urlMatcher.find()) {
-            int start = urlMatcher.start();
-            int end = urlMatcher.end();
-            spannableContent.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            final int start = urlMatcher.start();
+            final int end = urlMatcher.end();
+            spannableContent.setSpan(new ForegroundColorSpan(linkColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableContent.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
@@ -115,53 +122,83 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         // Очищаем GridLayout перед заполнением
         holder.imageGrid.removeAllViews();
 
-        List<String> imageUrls = null;
-        if (article.getImages() != null) {
-            imageUrls = article.getImages().stream()
-                    .map(ArticleResponse.ArticleImage::getImage)
-                    .collect(Collectors.toList());
-        }
+        List<String> imageUrls = article.getImages() != null
+                ? article.getImages().stream()
+                .map(ArticleResponse.ArticleImage::getImage)
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
-        // Ограничиваем количество отображаемых изображений
-        if (imageUrls != null && !imageUrls.isEmpty()) {
-            int maxImages = Math.min(imageUrls.size(), 10); // Максимум 10 изображений
-            holder.imageGrid.setColumnCount(2);
-            int rowCount = (int) Math.ceil(maxImages / 2.0); // Высчитываем количество строк
-            holder.imageGrid.setRowCount(rowCount);
+        // Установка сетки изображений с динамической логикой
+        if (!imageUrls.isEmpty()) {
+            int totalImages = imageUrls.size();
+            int maxImages = Math.min(totalImages, 10); // Максимум 10 изображений
+
+            holder.imageGrid.removeAllViews(); // Очищаем сетку
+            holder.imageGrid.setColumnCount(totalImages > 1 ? 2 : 1); // 2 колонки, если больше одной картинки
 
             for (int i = 0; i < maxImages; i++) {
-                String imageUrl = imageUrls.get(i);
-                String fullImageUrl = AppConfig.BASE_URL + imageUrl;
-
+                String fullImageUrl = AppConfig.BASE_URL + imageUrls.get(i);
                 ImageView imageView = new ImageView(holder.itemView.getContext());
-
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                layoutParams.width = 0;
-                layoutParams.height = 200; // Фиксированная высота
-                layoutParams.columnSpec = GridLayout.spec(i % holder.imageGrid.getColumnCount(), 1f);
-                layoutParams.rowSpec = GridLayout.spec(i / holder.imageGrid.getColumnCount(), 1f);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                if (totalImages == 1) {
+                    // Одно изображение занимает всё пространство
+                    layoutParams.width = GridLayout.LayoutParams.MATCH_PARENT;
+                    layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                    imageView.setAdjustViewBounds(true);
+                } else if (totalImages == 2) {
+                    // Две картинки, каждая занимает половину экрана по высоте
+                    layoutParams.width = 0;
+                    layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                    layoutParams.columnSpec = GridLayout.spec(i % 2, 1f); // Делим ширину поровну
+                    layoutParams.rowSpec = GridLayout.spec(i / 2, 1f); // Делим высоту на строки
+                } else if (totalImages == 3) {
+                    // Три картинки: 2 в верхнем ряду, 1 в нижнем
+                    if (i < 2) {
+                        layoutParams.width = 0;
+                        layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                        layoutParams.columnSpec = GridLayout.spec(i, 1f);
+                        layoutParams.rowSpec = GridLayout.spec(0, 1f); // Верхний ряд
+                    } else {
+                        layoutParams.width = GridLayout.LayoutParams.MATCH_PARENT;
+                        layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                        layoutParams.rowSpec = GridLayout.spec(1, 1f); // Нижний ряд
+                    }
+                } else {
+                    // Четыре и более: равномерная сетка 2xN
+                    layoutParams.width = 0;
+                    layoutParams.height = 0;
+                    layoutParams.columnSpec = GridLayout.spec(i % 2, 1f); // Две колонки
+                    layoutParams.rowSpec = GridLayout.spec(i / 2, 1f); // Строки в зависимости от количества
+                }
+
+                layoutParams.setMargins(4, 4, 4, 4); // Отступы между изображениями
                 imageView.setLayoutParams(layoutParams);
+                imageView.setBackgroundResource(R.drawable.rounded_corner_image);
+                imageView.setClipToOutline(true);
+
                 Glide.with(holder.itemView.getContext())
                         .load(fullImageUrl)
                         .placeholder(R.drawable.error_image)
                         .error(R.drawable.error_image)
-                        .override(200, 200) // Уменьшение размера для оптимизации
                         .centerCrop()
                         .into(imageView);
 
                 holder.imageGrid.addView(imageView);
 
-                // Открытие изображения в полноэкранном режиме при клике
+                // Показ в полноэкранном режиме
+                final int finalI = i;
                 imageView.setOnClickListener(v -> {
                     Intent intent = new Intent(holder.itemView.getContext(), FullscreenImageActivity.class);
-                    intent.putExtra("image_url", fullImageUrl);
+                    intent.putStringArrayListExtra("images", new ArrayList<>(imageUrls));
+                    intent.putExtra("current_index", finalI);
                     holder.itemView.getContext().startActivity(intent);
                 });
             }
         }
 
-        // Получение аватарки автора
+
+        // Загрузка аватарки
         int authorId = article.getAuthor();
         UserResponse cachedUser = userCache.get(authorId);
         if (cachedUser != null) {
@@ -173,20 +210,18 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         UserResponse user = response.body();
-                        userCache.put(authorId, user); // Кэшируем данные пользователя
+                        userCache.put(authorId, user);
                         loadAuthorAvatar(holder, user.getAvatarUrl());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserResponse> call, Throwable t) {
-                    Log.e("ArticleAdapter", "Ошибка при загрузке данных пользователя: " + t.getMessage());
+                    Log.e("ArticleAdapter", "Ошибка загрузки данных пользователя: " + t.getMessage());
                 }
             });
         }
     }
-
-
 
     public static String getRelativeTime(String isoTime) {
         try {
