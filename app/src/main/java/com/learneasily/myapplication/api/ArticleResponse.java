@@ -8,16 +8,9 @@ public class ArticleResponse {
     private String content;
     private String author_name;
     private String author_surname;
+    private int author;
     private String created_at;
     private List<ArticleImage> images;
-    private String authorAvatar;
-    public String getAuthorAvatar() {
-        return authorAvatar;
-    }
-
-    public void setAuthorAvatar(String authorAvatar) {
-        this.authorAvatar = authorAvatar;
-    }
 
     public static class ArticleImage {
         private int id;
@@ -30,6 +23,10 @@ public class ArticleResponse {
         public String getImage() {
             return image;
         }
+    }
+
+    public int getAuthor() { // Геттер для поля author
+        return author;
     }
 
     public int getId() {

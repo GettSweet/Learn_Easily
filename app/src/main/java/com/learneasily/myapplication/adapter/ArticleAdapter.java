@@ -2,6 +2,7 @@ package com.learneasily.myapplication.adapter;
 
 import android.content.Intent;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +15,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.learneasily.myapplication.R;
+import com.learneasily.myapplication.api.ApiService;
 import com.learneasily.myapplication.api.AppConfig;
 import com.learneasily.myapplication.api.ArticleResponse;
+import com.learneasily.myapplication.api.UserResponse;
 import com.learneasily.myapplication.bottom_nav.articles.FullscreenImageActivity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
     private final List<ArticleResponse> articles;
+    private final SparseArray<UserResponse> userCache = new SparseArray<>();
 
     public ArticleAdapter(List<ArticleResponse> articles) {
         this.articles = articles;
@@ -42,27 +50,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         holder.title.setText(article.getTitle());
         holder.author.setText(String.format("%s %s", article.getAuthorName(), article.getAuthorSurname()));
         holder.content.setText(article.getContent());
-
-        String authorAvatarUrl = article.getAuthorAvatar() != null
-                ? AppConfig.BASE_URL + article.getAuthorAvatar()
-                : null;
-
-        Log.d("ProfileFragment", "Avatar URL: " + authorAvatarUrl);
-
-        if (authorAvatarUrl != null) {
-            Glide.with(holder.itemView.getContext())
-                    .load(authorAvatarUrl)
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error_image)
-                    .circleCrop()
-                    .into(holder.authorAvatar);
-        } else {
-            // Устанавливаем дефолтное изображение
-            Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.placeholder)
-                    .circleCrop()
-                    .into(holder.authorAvatar);
-        }
 
         // Очищаем GridLayout перед заполнением
         holder.imageGrid.removeAllViews();
@@ -112,10 +99,42 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 });
             }
         }
+
+        // Получение аватарки автора
+        int authorId = article.getAuthor();
+        UserResponse cachedUser = userCache.get(authorId);
+        if (cachedUser != null) {
+            loadAuthorAvatar(holder, cachedUser.getAvatarUrl());
+        } else {
+            ApiService apiService = AppConfig.getApiService();
+            apiService.getUserDetails(authorId).enqueue(new Callback<UserResponse>() {
+                @Override
+                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        UserResponse user = response.body();
+                        userCache.put(authorId, user); // Кэшируем данные пользователя
+                        loadAuthorAvatar(holder, user.getAvatarUrl());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserResponse> call, Throwable t) {
+                    Log.e("ArticleAdapter", "Ошибка при загрузке данных пользователя: " + t.getMessage());
+                }
+            });
+        }
     }
 
-
-
+    private void loadAuthorAvatar(ArticleViewHolder holder, String avatarUrl) {
+        if (avatarUrl != null && !avatarUrl.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.placeholder_avatar) // Плейсхолдер для аватарки
+                    .error(R.drawable.error_avatar) // Изображение в случае ошибки
+                    .circleCrop() // Круглая обрезка изображения
+                    .into(holder.authorAvatar);
+        }
+    }
 
     @Override
     public int getItemCount() {
