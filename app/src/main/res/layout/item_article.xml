@@ -5,15 +5,6 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Заголовок статьи -->
-    <TextView
-        android:id="@+id/articleTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="18sp" />
-
-    <!-- Аватарка и автор статьи -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,22 +20,35 @@
             android:scaleType="centerCrop"
             android:background="@drawable/circle_background" />
 
-        <TextView
-            android:id="@+id/articleAuthor"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/articleAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/create_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Контент статьи -->
     <TextView
         android:id="@+id/articleContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:autoLink="none"/>
 
-    <!-- Сетка изображений -->
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/imageGrid"
         android:layout_width="match_parent"
@@ -53,7 +57,6 @@
         app:columnCount="2"
         app:rowCount="2" />
 
-    <!-- RecyclerView (если требуется) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/imageRecyclerView"
         android:layout_width="match_parent"

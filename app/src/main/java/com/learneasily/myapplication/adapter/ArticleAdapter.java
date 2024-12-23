@@ -1,13 +1,22 @@
 package com.learneasily.myapplication.adapter;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.Patterns;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.gridlayout.widget.GridLayout;
@@ -21,7 +30,15 @@ import com.learneasily.myapplication.api.ArticleResponse;
 import com.learneasily.myapplication.api.UserResponse;
 import com.learneasily.myapplication.bottom_nav.articles.FullscreenImageActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -47,9 +64,53 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
         ArticleResponse article = articles.get(position);
-        holder.title.setText(article.getTitle());
+
+        // Установка относительного времени
+        holder.create_time.setText(getRelativeTime(article.getCreate_Time()));
+
         holder.author.setText(String.format("%s %s", article.getAuthorName(), article.getAuthorSurname()));
-        holder.content.setText(article.getContent());
+
+        // Обработка хештегов и ссылок в содержимом статьи
+        String contentText = article.getContent();
+        SpannableString spannableContent = new SpannableString(contentText);
+
+        // Поиск хештегов (#)
+        Pattern hashtagPattern = Pattern.compile("#\\w+");
+        Matcher hashtagMatcher = hashtagPattern.matcher(contentText);
+
+        while (hashtagMatcher.find()) {
+            int start = hashtagMatcher.start();
+            int end = hashtagMatcher.end();
+            spannableContent.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableContent.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    Toast.makeText(widget.getContext(), "Хештег: " + spannableContent.subSequence(start, end), Toast.LENGTH_SHORT).show();
+                }
+            }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        // Поиск ссылок (http:// или https://)
+        Pattern urlPattern = Patterns.WEB_URL;
+        Matcher urlMatcher = urlPattern.matcher(contentText);
+
+        while (urlMatcher.find()) {
+            int start = urlMatcher.start();
+            int end = urlMatcher.end();
+            spannableContent.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableContent.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    String url = spannableContent.subSequence(start, end).toString();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    widget.getContext().startActivity(intent);
+                }
+            }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        holder.content.setText(spannableContent);
+        holder.content.setMovementMethod(LinkMovementMethod.getInstance());
 
         // Очищаем GridLayout перед заполнением
         holder.imageGrid.removeAllViews();
@@ -125,6 +186,49 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
     }
 
+
+
+    public static String getRelativeTime(String isoTime) {
+        try {
+            // Создаем форматтер для ISO 8601
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Устанавливаем часовой пояс UTC
+            Date serverDate = isoFormat.parse(isoTime);
+
+            if (serverDate == null) return "Некорректное время";
+
+            // Получаем текущее время в UTC
+            long currentTimeMillis = System.currentTimeMillis();
+
+            // Разница времени в миллисекундах
+            long diffInMillis = currentTimeMillis - serverDate.getTime();
+
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(diffInMillis);
+            if (seconds < 60) return "только что";
+
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis);
+            if (minutes < 60) return minutes + " минут назад";
+
+            long hours = TimeUnit.MILLISECONDS.toHours(diffInMillis);
+            if (hours < 24) return hours + " часов назад";
+
+            long days = TimeUnit.MILLISECONDS.toDays(diffInMillis);
+            if (days < 7) return days + " дней назад";
+
+            SimpleDateFormat dateFormatter;
+            if (days < 365) {
+                dateFormatter = new SimpleDateFormat("d MMMM", Locale.getDefault());
+            } else {
+                dateFormatter = new SimpleDateFormat("d MMMM yyyy 'года'", Locale.getDefault());
+            }
+
+            // Возвращаем форматированную дату
+            return dateFormatter.format(serverDate);
+        } catch (ParseException e) {
+            return "Некорректное время";
+        }
+    }
+
     private void loadAuthorAvatar(ArticleViewHolder holder, String avatarUrl) {
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -142,13 +246,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     }
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        TextView title, author, content;
+        TextView create_time, author, content;
         GridLayout imageGrid;
         ImageView authorAvatar;
 
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.articleTitle);
+            create_time = itemView.findViewById(R.id.create_time);
             author = itemView.findViewById(R.id.articleAuthor);
             content = itemView.findViewById(R.id.articleContent);
             imageGrid = itemView.findViewById(R.id.imageGrid);

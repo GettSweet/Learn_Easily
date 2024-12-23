@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ArticleResponse {
     private int id;
-    private String title;
+    private String create_time;
     private String content;
     private String author_name;
     private String author_surname;
@@ -33,8 +33,8 @@ public class ArticleResponse {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCreate_Time() {
+        return created_at;
     }
 
     public String getContent() {
@@ -47,10 +47,6 @@ public class ArticleResponse {
 
     public String getAuthorSurname() {
         return author_surname;
-    }
-
-    public String getCreatedAt() {
-        return created_at;
     }
 
     public List<ArticleImage> getImages() {
