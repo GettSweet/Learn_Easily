@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".bottom_nav.profile_activitys.SettingsActivity"
     android:background="@color/off_white">
 
+    <!-- Кнопка для выхода -->
     <ImageButton
         android:id="@+id/back_profile"
         android:layout_width="30dp"
@@ -18,5 +17,20 @@
         android:scaleType="fitCenter"
         android:src="@drawable/baseline_arrow_back_24"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <!-- Переключатель темы -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/theme_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="30dp"
+        android:thumb="@drawable/thumb"
+        app:track="@drawable/track"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        >
+
+    </androidx.appcompat.widget.SwitchCompat>
 
 </RelativeLayout>

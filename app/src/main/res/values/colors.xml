@@ -31,6 +31,14 @@
     <color name="button_shadow">#44000000</color>
     <color name="border_color">#B0E0E6</color>
 
+    <color name="semi_transparent_white">#80FFFFFF</color>
+
+    <color name="appleBlue">#007AFF</color> <!-- Ярко-синий (основной акцентный цвет Apple) -->
+    <color name="appleDarkBlue">#004080</color> <!-- Тёмно-синий -->
+    <color name="appleLightBlue">#A2CFFF</color> <!-- Светло-голубой -->
+    <color name="light_blue">#F0F8FF</color>
+    <color name="blue">#1E88E5</color>
+    <color name="dark_blue">#1565C0</color>
     # Best White Colors
     <color name="ghost_white">#F8F8FF</color>
     <color name="alice_blue">#F0F8FF</color>

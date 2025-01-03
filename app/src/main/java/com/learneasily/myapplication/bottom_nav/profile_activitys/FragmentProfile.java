@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -31,6 +34,7 @@ import com.learneasily.myapplication.api.RetrofitClient;
 import com.learneasily.myapplication.api.UserResponse;
 import com.learneasily.myapplication.databinding.FragmentProfileBinding;
 import com.learneasily.myapplication.start_activitys.LoginActivity;
+import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -132,6 +136,39 @@ public class FragmentProfile extends Fragment {
             uploadAvatar(selectedImageUri);
         }
     }
+
+    private void startCropActivity(Uri sourceUri) {
+        File avatarsDir = new File(Environment.getExternalStorageDirectory(), "avatars");
+        if (!avatarsDir.exists()) {
+            avatarsDir.mkdirs(); // создаем директорию, если она не существует
+        }
+        File destinationFile = new File(avatarsDir, "cropped_image.jpg");
+        Uri destinationUri = Uri.fromFile(destinationFile);
+
+        UCrop uCrop = UCrop.of(sourceUri, destinationUri);
+
+        // Настройки кадрирования
+        UCrop.Options options = new UCrop.Options();
+        options.setToolbarTitle("Кадрирование");
+        options.setFreeStyleCropEnabled(false); // Свободное кадрирование
+        options.setShowCropFrame(true); // Показываем рамку кадрирования
+        options.setShowCropGrid(false); // Отключаем сетку
+        options.setHideBottomControls(true); // Скрываем нижние контролы (кнопки изменения формы)
+
+        // Кастомные цвета
+        options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.appleBlue));
+        options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.appleDarkBlue));
+        options.setActiveControlsWidgetColor(ContextCompat.getColor(getContext(), R.color.appleLightBlue));
+        options.setCropGridColor(ContextCompat.getColor(getContext(), R.color.appleLightBlue));
+        options.setCropFrameColor(ContextCompat.getColor(getContext(), R.color.appleDarkBlue));
+
+        uCrop.withAspectRatio(1, 1);
+
+        uCrop.withOptions(options);
+        uCrop.start(getActivity());
+    }
+
+
 
     private void loadUserData(int userId) {
         idTextView.setText("id: " + userId);

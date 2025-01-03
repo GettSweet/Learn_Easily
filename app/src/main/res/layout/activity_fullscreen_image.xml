@@ -1,25 +1,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <com.learneasily.myapplication.bottom_nav.articles.ZoomableImageView
-        android:id="@+id/zoomable_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside" />
-
-    <ImageButton
-        android:id="@+id/back_news"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/card_background_2"
-        android:scaleType="fitCenter"
-
-        android:src="@drawable/baseline_arrow_back_24"
-        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

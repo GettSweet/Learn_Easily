@@ -18,10 +18,10 @@ public interface ApiService {
 
     @GET("id/{id}")
     Call<UserResponse> getUserDetails(@Path("id") int id);
-    @POST("login/") // Эндпоинт для авторизации
+    @POST("login/")
     Call<AuthResponse> login(@Body LoginRequest request);
 
-    @POST("register/") // Эндпоинт для регистрации
+    @POST("register/")
     Call<RegisterResponse> register(@Body RegisterRequest request);
 
     @GET("articles/")

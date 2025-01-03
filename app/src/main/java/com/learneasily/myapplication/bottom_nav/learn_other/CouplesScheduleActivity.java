@@ -45,7 +45,7 @@ public class CouplesScheduleActivity extends AppCompatActivity {
 
         TextView currentCoupleStatus = findViewById(R.id.current_couple_status);
         TextView nextCoupleStatus = findViewById(R.id.next_couple_status);
-        TextView breakTime = findViewById(R.id.break_time);
+        TextView breakTime = findViewById(R.id.break_details);
         ImageButton backButton = findViewById(R.id.back_button);
         ImageButton openScheduleButton = findViewById(R.id.open_schedule_button);
         openScheduleButton.setOnClickListener(v -> showScheduleBottomSheet());

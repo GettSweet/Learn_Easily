@@ -17,7 +17,6 @@ import com.learneasily.myapplication.bottom_nav.learn_other.FragmentLearn;
 import com.learneasily.myapplication.bottom_nav.articles.FragmentNews;
 import com.learneasily.myapplication.bottom_nav.FragmentTasks;
 import com.learneasily.myapplication.bottom_nav.profile_activitys.FragmentProfile;
-import com.learneasily.myapplication.start_activitys.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -25,28 +24,13 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 pagerMain;
     private ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
     private BottomNavigationView bntview;
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Проверка авторизации
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false);
-        int userId = sharedPreferences.getInt("user_id", -1);
-
-        if (!isLoggedIn || userId == -1) {
-            // Если пользователь не авторизован, перенаправляем на LoginActivity
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return; // Прерываем выполнение метода
-        }
-
         setContentView(R.layout.activity_main);
 
-        // Инициализация компонентов
         pagerMain = findViewById(R.id.pagerMain);
         bntview = findViewById(R.id.bntview);
 

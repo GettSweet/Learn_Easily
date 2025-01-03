@@ -8,4 +8,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="open_schedule">Открыть полное расписание</string>
     <string name="shoool_text">Расписание звонков</string>
+    <string name="back_button">Кнопка назад</string>
+    <string name="loading">Загрузка...</string>
+    <string name="error_message">Ошибка загрузки. \n Проверьте подключение сети и повторите попытку.</string>
+    <string name="retry">Повторить попытку</string>
 </resources>

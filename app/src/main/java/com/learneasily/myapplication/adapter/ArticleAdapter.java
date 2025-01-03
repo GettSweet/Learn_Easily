@@ -34,10 +34,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -71,16 +71,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         holder.content.setMovementMethod(LinkMovementMethod.getInstance());
         holder.content.setHighlightColor(Color.TRANSPARENT);
 
-        // Установка относительного времени
         holder.create_time.setText(getRelativeTime(article.getCreate_Time()));
-
         holder.author.setText(String.format("%s %s", article.getAuthorName(), article.getAuthorSurname()));
 
-        // Обработка хештегов и ссылок в содержимом статьи
         String contentText = article.getContent();
         SpannableString spannableContent = new SpannableString(contentText);
 
-        // Поиск хештегов (#)
         Pattern hashtagPattern = Pattern.compile("#\\w+");
         Matcher hashtagMatcher = hashtagPattern.matcher(contentText);
 
@@ -97,7 +93,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        // Поиск ссылок (http:// или https://)
         Pattern urlPattern = Patterns.WEB_URL;
         Matcher urlMatcher = urlPattern.matcher(contentText);
 
@@ -119,7 +114,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         holder.content.setText(spannableContent);
         holder.content.setMovementMethod(LinkMovementMethod.getInstance());
 
-        // Очищаем GridLayout перед заполнением
         holder.imageGrid.removeAllViews();
 
         List<String> imageUrls = article.getImages() != null
@@ -128,54 +122,28 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
-        // Установка сетки изображений с динамической логикой
         if (!imageUrls.isEmpty()) {
             int totalImages = imageUrls.size();
-            int maxImages = Math.min(totalImages, 10); // Максимум 10 изображений
+            int maxImages = Math.min(totalImages, 10);
 
-            holder.imageGrid.removeAllViews(); // Очищаем сетку
-            holder.imageGrid.setColumnCount(totalImages > 1 ? 2 : 1); // 2 колонки, если больше одной картинки
+            holder.imageGrid.setColumnCount(totalImages > 1 ? 2 : 1);
 
             for (int i = 0; i < maxImages; i++) {
                 String fullImageUrl = AppConfig.BASE_URL + imageUrls.get(i);
                 ImageView imageView = new ImageView(holder.itemView.getContext());
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
 
-                if (totalImages == 1) {
-                    // Одно изображение занимает всё пространство
-                    layoutParams.width = GridLayout.LayoutParams.MATCH_PARENT;
-                    layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                    imageView.setAdjustViewBounds(true);
-                } else if (totalImages == 2) {
-                    // Две картинки, каждая занимает половину экрана по высоте
-                    layoutParams.width = 0;
-                    layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                    layoutParams.columnSpec = GridLayout.spec(i % 2, 1f); // Делим ширину поровну
-                    layoutParams.rowSpec = GridLayout.spec(i / 2, 1f); // Делим высоту на строки
-                } else if (totalImages == 3) {
-                    // Три картинки: 2 в верхнем ряду, 1 в нижнем
-                    if (i < 2) {
-                        layoutParams.width = 0;
-                        layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                        layoutParams.columnSpec = GridLayout.spec(i, 1f);
-                        layoutParams.rowSpec = GridLayout.spec(0, 1f); // Верхний ряд
-                    } else {
-                        layoutParams.width = GridLayout.LayoutParams.MATCH_PARENT;
-                        layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                        layoutParams.rowSpec = GridLayout.spec(1, 1f); // Нижний ряд
-                    }
-                } else {
-                    // Четыре и более: равномерная сетка 2xN
-                    layoutParams.width = 0;
-                    layoutParams.height = 0;
-                    layoutParams.columnSpec = GridLayout.spec(i % 2, 1f); // Две колонки
-                    layoutParams.rowSpec = GridLayout.spec(i / 2, 1f); // Строки в зависимости от количества
-                }
+                int gridWidth = holder.imageGrid.getWidth();
+                int columnCount = holder.imageGrid.getColumnCount();
+                int cellWidth = gridWidth / columnCount;
 
-                layoutParams.setMargins(4, 4, 4, 4); // Отступы между изображениями
+                layoutParams.width = cellWidth;
+                layoutParams.height = cellWidth; // Квадратные ячейки
+                layoutParams.setMargins(4, 4, 4, 4);
+
                 imageView.setLayoutParams(layoutParams);
-                imageView.setBackgroundResource(R.drawable.rounded_corner_image);
-                imageView.setClipToOutline(true);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setAdjustViewBounds(true);
 
                 Glide.with(holder.itemView.getContext())
                         .load(fullImageUrl)
@@ -186,19 +154,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
                 holder.imageGrid.addView(imageView);
 
-                // Показ в полноэкранном режиме
-                final int finalI = i;
                 imageView.setOnClickListener(v -> {
                     Intent intent = new Intent(holder.itemView.getContext(), FullscreenImageActivity.class);
-                    intent.putStringArrayListExtra("images", new ArrayList<>(imageUrls));
-                    intent.putExtra("current_index", finalI);
+                    intent.putExtra("image_url", fullImageUrl); // Передаём полный URL изображения
                     holder.itemView.getContext().startActivity(intent);
                 });
             }
         }
 
-
-        // Загрузка аватарки
         int authorId = article.getAuthor();
         UserResponse cachedUser = userCache.get(authorId);
         if (cachedUser != null) {
@@ -225,17 +188,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     public static String getRelativeTime(String isoTime) {
         try {
-            // Создаем форматтер для ISO 8601
             SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Устанавливаем часовой пояс UTC
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date serverDate = isoFormat.parse(isoTime);
 
             if (serverDate == null) return "Некорректное время";
 
-            // Получаем текущее время в UTC
             long currentTimeMillis = System.currentTimeMillis();
-
-            // Разница времени в миллисекундах
             long diffInMillis = currentTimeMillis - serverDate.getTime();
 
             long seconds = TimeUnit.MILLISECONDS.toSeconds(diffInMillis);
@@ -250,14 +209,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             long days = TimeUnit.MILLISECONDS.toDays(diffInMillis);
             if (days < 7) return days + " дней назад";
 
-            SimpleDateFormat dateFormatter;
-            if (days < 365) {
-                dateFormatter = new SimpleDateFormat("d MMMM", Locale.getDefault());
-            } else {
-                dateFormatter = new SimpleDateFormat("d MMMM yyyy 'года'", Locale.getDefault());
-            }
+            SimpleDateFormat dateFormatter = days < 365
+                    ? new SimpleDateFormat("d MMMM", Locale.getDefault())
+                    : new SimpleDateFormat("d MMMM yyyy 'года'", Locale.getDefault());
 
-            // Возвращаем форматированную дату
             return dateFormatter.format(serverDate);
         } catch (ParseException e) {
             return "Некорректное время";
@@ -268,9 +223,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(avatarUrl)
-                    .placeholder(R.drawable.placeholder_avatar) // Плейсхолдер для аватарки
-                    .error(R.drawable.error_avatar) // Изображение в случае ошибки
-                    .circleCrop() // Круглая обрезка изображения
+                    .placeholder(R.drawable.placeholder_avatar)
+                    .error(R.drawable.error_avatar)
+                    .circleCrop()
                     .into(holder.authorAvatar);
         }
     }
